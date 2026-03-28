@@ -40,6 +40,6 @@ public class NihuawayKVService implements company.vk.edu.distrib.compute.KVServi
     private void registerContexts(){
         EntityDao dao = new EntityDao();
         server.createContext("/v0/entity", new EntityHandler(dao));
-        server.createContext("/v0/status", new PingHandler());
+        server.createContext("/v0/status", new PingHandler(dao));
     }
 }

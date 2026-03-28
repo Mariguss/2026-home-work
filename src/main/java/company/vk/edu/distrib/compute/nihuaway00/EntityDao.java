@@ -10,6 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EntityDao implements Dao<byte[]> {
     Map<String, byte[]> map = new ConcurrentHashMap<>();
 
+    public boolean available(){
+        return true;
+    }
+
     @Override
     public byte[] get(String key) throws NoSuchElementException, IllegalArgumentException, IOException {
         if (key == null || key.isEmpty() || key.isBlank()) {
