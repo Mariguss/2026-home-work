@@ -44,7 +44,7 @@ public class PopovIgorKVDaoPersistent implements Dao<byte[]> {
 
     @Override
     public void delete(String key) throws IOException {
-        this.checkActive();
+        checkActive();
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }
@@ -54,7 +54,7 @@ public class PopovIgorKVDaoPersistent implements Dao<byte[]> {
 
     @Override
     public void close() throws IOException {
-        checkActive();
+        checkActive(); // avoid double close
         active.set(false);
     }
 
