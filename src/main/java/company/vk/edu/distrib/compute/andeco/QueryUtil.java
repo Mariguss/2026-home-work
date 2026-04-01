@@ -1,6 +1,7 @@
 package company.vk.edu.distrib.compute.andeco;
 
 public final class QueryUtil {
+    private static final String ID = "id";
 
     private QueryUtil() {
     }
@@ -12,7 +13,7 @@ public final class QueryUtil {
 
         for (String param : query.split("&")) {
             int idx = param.indexOf('=');
-            if (idx > 0 && "id".equals(param.substring(0, idx))) {
+            if (idx > 0 && ID.equals(param.substring(0, idx))) {
                 return param.substring(idx + 1);
             }
         }
