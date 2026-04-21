@@ -23,6 +23,7 @@ public class MarigussKVService implements KVService {
     private final String selfEndpoint;
     private List<String> clusterEndpoints;
     private boolean isRunning;
+    private final Object lock = new Object();
 
     public MarigussKVService(int port) throws IOException {
         this.port = port;
@@ -38,29 +39,33 @@ public class MarigussKVService implements KVService {
     }
 
     @Override
-    public synchronized void start() {
-        if (isRunning) {
-            return;
-        }
-        try {
-            this.server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext("/v0/status", this::handleStatus);
-            server.createContext("/v0/entity", this::handleEntity);
-            server.setExecutor(null);
-            server.start();
-            isRunning = true;
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to start server on port " + port, e);
+    public void start() {
+        synchronized (lock) {
+            if (isRunning) {
+                return;
+            }
+            try {
+                this.server = HttpServer.create(new InetSocketAddress(port), 0);
+                server.createContext("/v0/status", this::handleStatus);
+                server.createContext("/v0/entity", this::handleEntity);
+                server.setExecutor(null);
+                server.start();
+                isRunning = true;
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to start server on port " + port, e);
+            }
         }
     }
 
     @Override
-    public synchronized void stop() {
-        if (!isRunning) {
-            return;
+    public void stop() {
+        synchronized (lock) {
+            if (!isRunning) {
+                return;
+            }
+            server.stop(0);
+            isRunning = false;
         }
-        server.stop(0);
-        isRunning = false;
     }
 
     private void handleStatus(HttpExchange exchange) throws IOException {

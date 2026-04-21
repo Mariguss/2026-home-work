@@ -22,7 +22,7 @@ public class MarigussKVCluster implements KVCluster {
 
         for (int port : ports) {
             try {
-                MarigussKVService service = new MarigussKVService(port);
+                MarigussKVService service = createService(port);
                 service.setClusterEndpoints(this.endpoints);
                 this.services.put("http://localhost:" + port, service);
             } catch (IOException e) {
@@ -58,5 +58,9 @@ public class MarigussKVCluster implements KVCluster {
     @Override
     public List<String> getEndpoints() {
         return new ArrayList<>(endpoints);
+    }
+
+    private MarigussKVService createService(int port) throws IOException {
+        return new MarigussKVService(port);
     }
 }
